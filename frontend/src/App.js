@@ -111,11 +111,12 @@ function App() {
         // capture
         // eslint-disable-next-line no-await-in-loop
         const canvas = await html2canvas(el, {
-          scale: 1.7,
+          scale: 3,
           useCORS: true,
           backgroundColor: "#ffffff",
           logging: false,
           imageTimeout: 15000,
+          letterRendering: true,
           ignoreElements: (node) => {
             if (!node.getAttribute) return false;
             if (node.getAttribute("data-no-export") === "true") return true;
@@ -131,14 +132,14 @@ function App() {
         el.style.overflow = original.overflow;
         el.style.boxShadow = original.boxShadow;
 
-        const imgData = canvas.toDataURL("image/jpeg", 0.84);
+        const imgData = canvas.toDataURL("image/jpeg", 0.97);
         if (i > 0) pdf.addPage("a4", "portrait");
-        pdf.addImage(imgData, "JPEG", 0, 0, 210, 297, undefined, "MEDIUM");
+        pdf.addImage(imgData, "JPEG", 0, 0, 210, 297, undefined, "NONE");
 
         setPdfCurrent(i + 1);
       }
 
-      pdf.save("Al-MAAN-Exchange-Feasibility-Study.pdf");
+      pdf.save("Alamaan-Exchange-Feasibility-Study.pdf");
       logDownload("pdf", pages.length);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -197,7 +198,7 @@ function App() {
         `<body>${clone.innerHTML}</body></html>`;
 
       const blob = htmlDocx.asBlob(html, { orientation: "portrait", margins: { top: 720, bottom: 720, left: 720, right: 720 } });
-      saveAs(blob, "Al-MAAN-Exchange-Feasibility-Study.docx");
+      saveAs(blob, "Alamaan-Exchange-Feasibility-Study.docx");
       logDownload("word", clone.querySelectorAll(".a4").length);
     } catch (err) {
       // eslint-disable-next-line no-console

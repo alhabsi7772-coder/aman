@@ -119,7 +119,7 @@ export const part4 = () => [
   /* ───────────── CHAPTER 14 — BUSINESS PLAN ───────────── */
   mkCh(14, "Business Plan", "Operating model, revenue model, partnerships and revenue share, Omanisation from Year 2, and the Phase-2 mall expansion in Muscat", [
     Sec("14.1 · Operating Model", "Lean by Design"),
-    Lede("Al MAAN Exchange operates as an asset-owning, technology-enabled service company. It owns the machines and the software licence, contracts with hotels and malls for placement, and partners with a licensed exchange company for wholesale currency settlement and — during the sandbox phase — regulatory principal status. Day-to-day operations are executed by a small field team supported by a central monitoring dashboard; management is provided by the three founding partners."),
+    Lede("Alamaan Exchange operates as an asset-owning, technology-enabled service company. It owns the machines and the software licence, contracts with hotels and malls for placement, and partners with a licensed exchange company for wholesale currency settlement and — during the sandbox phase — regulatory principal status. Day-to-day operations are executed by a small field team supported by a central monitoring dashboard; management is provided by the three founding partners."),
     Tbl("Organisational structure — trial phase and growth",
       ["Function", "Role(s)", "Year 1", "Year 3", "Year 5"],
       [

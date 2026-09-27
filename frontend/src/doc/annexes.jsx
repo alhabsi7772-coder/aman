@@ -26,7 +26,7 @@ export const annexes = () => [
     Tbl("Placement agreement — principal commercial and operational terms",
       ["Clause", "Hotel template", "Mall template"],
       [
-        ["Parties", "Al MAAN Exchange LLC (Operator) and the hotel owner/operator (Host)", "Operator and mall management company"],
+        ["Parties", "Alamaan Exchange LLC (Operator) and the hotel owner/operator (Host)", "Operator and mall management company"],
         ["Grant", "Licence to install and operate one or more self-service exchange machines at agreed lobby positions", "Kiosk licence for a ≈ 1 m² footprint at agreed position"],
         ["Exclusivity", "Host will not permit any other self-service FX machine on the premises during the term", "Non-exclusive unless negotiated; right of first refusal on additional positions"],
         ["Term", "12 months minimum, renewing annually; 90-day notice", "12–36 months; 90-day notice"],
@@ -136,7 +136,7 @@ export const annexes = () => [
   /* ───────────── ANNEX D ───────────── */
   mkCh("D", "Proposed Regulatory Framework Based on the Qatari Experience", "A policy proposal to the Central Bank of Oman for the supervision of self-service currency exchange machines", [
     Sec("D.1 · Purpose and Approach", "Transposing a Proven Supervisory Model"),
-    Lede("This annex sets out, in the form of proposed operating conditions, a regulatory framework for self-service currency exchange machines in the Sultanate of Oman. It is modelled exclusively on the Qatari experience described in Chapter 3 — the Qatar Central Bank’s treatment of unattended machines as service points of licensed exchange houses under Law No. 13 of 2012, the AML/CFT Law No. 20 of 2019 and supervisory circulars — and transposed into the Omani legal context of the Banking Law (RD 114/2000), the AML/CFT Law (RD 30/2016) and the CBO Fintech Regulatory Sandbox. Al MAAN Exchange offers to adopt these conditions voluntarily as the basis of its pilot authorisation."),
+    Lede("This annex sets out, in the form of proposed operating conditions, a regulatory framework for self-service currency exchange machines in the Sultanate of Oman. It is modelled exclusively on the Qatari experience described in Chapter 3 — the Qatar Central Bank’s treatment of unattended machines as service points of licensed exchange houses under Law No. 13 of 2012, the AML/CFT Law No. 20 of 2019 and supervisory circulars — and transposed into the Omani legal context of the Banking Law (RD 114/2000), the AML/CFT Law (RD 30/2016) and the CBO Fintech Regulatory Sandbox. Alamaan Exchange offers to adopt these conditions voluntarily as the basis of its pilot authorisation."),
     Sec("D.2 · Proposed Conditions", "Article by Article"),
     Tbl("Proposed operating conditions for self-service currency exchange machines",
       ["Art.", "Subject", "Proposed condition (Oman)", "Qatari source practice"],
@@ -176,7 +176,7 @@ export const annexes = () => [
         ["7. Technology", "Platform availability; security events; changes deployed; penetration-test status"],
         ["8. Attestation", "Signed by Compliance Officer and General Manager; countersigned by licensed principal"],
       ]),
-    P("The framework is deliberately more demanding than the minimum an operator might negotiate, because the partners judge that a supervisor’s confidence is the scarcest asset in a new channel. Adopting the Qatari standard from day one also positions Al MAAN Exchange to expand into any other GCC market whose regulator has already accepted that standard."),
+    P("The framework is deliberately more demanding than the minimum an operator might negotiate, because the partners judge that a supervisor’s confidence is the scarcest asset in a new channel. Adopting the Qatari standard from day one also positions Alamaan Exchange to expand into any other GCC market whose regulator has already accepted that standard."),
   ]),
 
   /* ───────────── ANNEX E ───────────── */
@@ -214,7 +214,7 @@ export const annexes = () => [
       ]),
     Sec("F.2 · Responsibilities", "Who Does What"),
     Tbl("Division of responsibilities",
-      ["Area", "Operator (Al MAAN Exchange)", "Host (hotel / mall)"],
+      ["Area", "Operator (Alamaan Exchange)", "Host (hotel / mall)"],
       [
         ["Installation", "Site survey, anchoring, machine, connectivity, acceptance test", "Position, power socket, permission for anchoring, access for installation"],
         ["Operation", "Cash, replenishment, rates, compliance, helpline, maintenance", "Notify Operator of faults observed; no handling of machine or cash"],

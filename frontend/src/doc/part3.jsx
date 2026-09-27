@@ -16,7 +16,7 @@ export const part3 = () => [
         ["Fixed service fee", n("—"), n("0.500"), "Displayed separately; deducted from payout"],
         ["Paid to guest", n("—"), n("37.250"), "Dispensed in OMR notes and coins"],
         ["Wholesale sale of notes (≈ 0.3835)", n("100 USD"), n("38.350"), "Sold to licensed partner; 0.1 baisa/USD wholesale spread"],
-        total(["Gross margin retained by Al MAAN", n(""), n("1.100–1.200"), "0.500 fee + 0.600–0.700 net spread"]),
+        total(["Gross margin retained by Alamaan", n(""), n("1.100–1.200"), "0.500 fee + 0.600–0.700 net spread"]),
       ],
       "The partners’ instruction “0.380 OMR per USD fixed” is treated as the indicative retail buying rate around which the spread is set; the CBO peg of 0.3845 is the reference value. The model conservatively books 1.200 OMR per 100 USD as the operator’s margin before wholesale-partner fees, which are absorbed in the spread component."),
     P("The same logic applies to the other eleven accepted currencies — euro, sterling, UAE dirham, Saudi riyal, Qatari riyal, Kuwaiti dinar, Bahraini dinar, Indian rupee, Chinese yuan, Swiss franc and Japanese yen — with spreads calibrated to each currency’s wholesale liquidity in Muscat. The financial model expresses every transaction in 100-USD equivalents so that the three pricing scenarios requested by the partners — margins of 0.500, 0.800 and 1.200 OMR — can be compared on one basis."),

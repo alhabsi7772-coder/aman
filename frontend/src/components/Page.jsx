@@ -21,14 +21,14 @@ export const Page = ({
     >
       {!bare && (
         <header className="page-header">
-          <span className="brand">Al MAAN Exchange</span>
+          <span className="brand">Alamaan Exchange</span>
           <span className="chapter-tag">{chapter}</span>
         </header>
       )}
       <div className="page-content">{children}</div>
       {!bare && (
         <footer className="page-footer">
-          <span>CONFIDENTIAL · AL MAAN EXCHANGE · 2026</span>
+          <span>CONFIDENTIAL · ALAMAAN EXCHANGE · 2026</span>
           <span className="page-num">{String(n).padStart(3, "0")}</span>
         </footer>
       )}

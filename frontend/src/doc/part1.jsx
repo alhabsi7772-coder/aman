@@ -4,7 +4,7 @@ export const part1 = () => [
   /* ───────────── CHAPTER 1 — INTRODUCTION ───────────── */
   mkCh(1, "Introduction", "Executive summary, purpose of the study, scope, methodology and assumption boundaries", [
     Sec("1.1 · Executive Summary", "A Self-Service Foreign-Exchange Channel for Oman’s Hospitality Sector"),
-    Lede("Al MAAN Exchange (الأمان للصرافة) proposes to establish the Sultanate of Oman’s first organised network of self-service currency exchange machines, positioned inside internationally branded hotels in Muscat during a first phase and extended to premium shopping malls in a second phase. The machines accept banknotes in twelve foreign currencies and dispense Omani Rials within sixty seconds, twenty-four hours a day, without a teller."),
+    Lede("Alamaan Exchange (الأمان للصرافة) proposes to establish the Sultanate of Oman’s first organised network of self-service currency exchange machines, positioned inside internationally branded hotels in Muscat during a first phase and extended to premium shopping malls in a second phase. The machines accept banknotes in twelve foreign currencies and dispense Omani Rials within sixty seconds, twenty-four hours a day, without a teller."),
     P("The study was commissioned by the three founding partners to answer one question with rigour: can a network of self-service exchange kiosks be launched inside a fixed working-capital ceiling of **31,000 OMR**, comply fully with Central Bank of Oman (CBO) requirements, and generate a return that justifies the partners’ capital and time? The answer developed across the eighteen chapters that follow is a qualified yes. The project is financially attractive in the recommended pricing configuration (a blended margin of **1.200 OMR per 100 USD equivalent**), marginal at 0.800 OMR and not viable at 0.500 OMR. Its success therefore depends less on demand — which the hotel data support — than on pricing discipline, location quality and regulatory execution."),
     Stats([
       { label: "Working capital ceiling", value: "31,000", unit: "OMR", desc: "Not to be exceeded" },
@@ -49,7 +49,7 @@ export const part1 = () => [
     Tbl("Master assumption register",
       ["Parameter", "Value adopted", "Source / basis"],
       [
-        ["Company", "Al MAAN Exchange (الأمان للصرافة)", "Founding partners"],
+        ["Company", "Alamaan Exchange (الأمان للصرافة)", "Founding partners"],
         ["Machine price — 3 units", "3,069.75 OMR per unit", "Manufacturer quotation"],
         ["Machine price — 5 units", "3,019.75 OMR per unit", "Manufacturer quotation (adopted for Phase 1)"],
         ["Machine price — 10 units", "2,747.00 OMR per unit", "Manufacturer quotation (Year-3+ batches)"],
@@ -194,7 +194,7 @@ export const part1 = () => [
       "**Technology**: real-time connectivity to the operator’s core system; no offline transactions; encrypted communication; QCB-approved information-security standards.",
       "**Consumer protection**: dispute-handling procedure, refund mechanism for failed dispenses, and a 24-hour helpline printed on the machine.",
     ]),
-    P("The lesson for Oman is that the regulatory path need not involve new legislation. The Central Bank of Oman already licenses exchange companies under the Banking Law (Royal Decree 114/2000) and supervises AML/CFT compliance under Royal Decree 30/2016. Annex D of this study proposes a set of operating conditions modelled directly on the Qatari approach, which Al MAAN Exchange would volunteer to the CBO as the basis for a pilot no-objection. Chapter 5 sets out the licensing route in detail."),
+    P("The lesson for Oman is that the regulatory path need not involve new legislation. The Central Bank of Oman already licenses exchange companies under the Banking Law (Royal Decree 114/2000) and supervises AML/CFT compliance under Royal Decree 30/2016. Annex D of this study proposes a set of operating conditions modelled directly on the Qatari approach, which Alamaan Exchange would volunteer to the CBO as the basis for a pilot no-objection. Chapter 5 sets out the licensing route in detail."),
     Sec("3.5 · Impact on the Qatari Banking and Hotel Sectors", "What Changed"),
     P("In the banking sector, the kiosks shifted low-value cash exchange away from bank counters and exchange-house branches, freeing staffed capacity for higher-margin remittance and corporate business while extending regulated service to hours and locations that branches could not economically cover. Operators reported measurable declines in branch queue times and an increase in captured tourist volume that had previously leaked to hotel receptions and informal channels. In the hotel sector, properties that hosted machines reported fewer front-desk exchange requests, elimination of the reception’s cash-handling risk, and a guest-satisfaction benefit that several hotels now advertise. The kiosk became, in effect, a standard amenity in Doha’s luxury hotels within two years — the trajectory this study anticipates for Muscat."),
     Quote("Qatar showed that the unattended exchange machine is not a new financial product but a new door into an old, well-regulated one. The regulator’s task was to make sure the door had the same locks as the branch."),
@@ -219,7 +219,7 @@ export const part1 = () => [
         ["Hotel reception", "Hotel cashier", "24/7", "3–6%", "Poor rate; cash-handling risk for hotel; limited currencies"],
         ["ATM (card withdrawal)", "All banks", "24/7", "2–4% incl. issuer fees", "Card fees; daily limits; OMR only"],
         ["Airport counters", "Licensed exchange houses", "Flight-linked", "2–4%", "Arrival queues; airside only"],
-        rec(["Self-service kiosk (proposed)", "Al MAAN Exchange", "24/7", "≈ 1.2 OMR per 100 USD (≈ 3.1%)", "Regulated, transparent, in-hotel, 12 currencies"]),
+        rec(["Self-service kiosk (proposed)", "Alamaan Exchange", "24/7", "≈ 1.2 OMR per 100 USD (≈ 3.1%)", "Regulated, transparent, in-hotel, 12 currencies"]),
       ],
       "Spreads are indicative ranges observed by the partners in Muscat; the kiosk’s all-in margin is disclosed on screen before confirmation."),
     Sec("4.2 · The Regulators", "Who Supervises What"),
@@ -233,8 +233,8 @@ export const part1 = () => [
     ]),
     Sec("4.3 · Traditional Exchange Houses", "Strengths, Limits and the Wholesale Relationship"),
     P("Oman’s exchange companies are well-capitalised, long-established and trusted, with a business mix dominated by outward remittances to South Asia, which account for the bulk of their revenue. Currency exchange for tourists is a secondary line, served through branches in souqs, shopping centres and a handful of airport counters. None operates a kiosk network and none has, to the partners’ knowledge, sought CBO approval for one. Their branch economics — rent, staffing and security for a manned counter — make it uneconomic to open in a hotel lobby generating fifteen to twenty transactions a day; that is precisely the niche a 90-watt unattended machine can fill."),
-    P("Rather than competitors, the exchange houses are the project’s wholesale counterparties. Al MAAN Exchange will sell the foreign banknotes collected by its machines each day to a licensed exchange house or bank at wholesale rates, replenishing its Omani-Rial float in the same transaction. Preliminary discussions indicate that wholesale buying rates for major currencies in Muscat sit within 0.2–0.4% of the interbank rate for USD, EUR, GBP, AED and SAR, with wider spreads for INR, CNY and other Asian currencies. The study assumes that the operator retains the full retail margin defined in the pricing model after paying these wholesale spreads, which are embedded in the 0.700 OMR “spread” component."),
-    Tbl("Where Al MAAN Exchange will buy and sell foreign currency in Oman",
+    P("Rather than competitors, the exchange houses are the project’s wholesale counterparties. Alamaan Exchange will sell the foreign banknotes collected by its machines each day to a licensed exchange house or bank at wholesale rates, replenishing its Omani-Rial float in the same transaction. Preliminary discussions indicate that wholesale buying rates for major currencies in Muscat sit within 0.2–0.4% of the interbank rate for USD, EUR, GBP, AED and SAR, with wider spreads for INR, CNY and other Asian currencies. The study assumes that the operator retains the full retail margin defined in the pricing model after paying these wholesale spreads, which are embedded in the 0.700 OMR “spread” component."),
+    Tbl("Where Alamaan Exchange will buy and sell foreign currency in Oman",
       ["Counterparty type", "Examples in Muscat", "Role", "Indicative wholesale spread"],
       [
         ["Licensed exchange company", "Oman United Exchange; Global Money Exchange; Mustafa Sultan Exchange; Purshottam Kanji Exchange", "Daily sale of collected notes; OMR replenishment", "0.2–0.4% (USD/EUR/GBP/AED/SAR); 0.5–1.0% (INR/CNY/other)"],
