@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Request
+from fastapi import FastAPI, APIRouter
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -33,30 +33,6 @@ class StatusCheckCreate(BaseModel):
     client_name: str
 
 
-class DownloadEvent(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    format: str  # "pdf" | "word"
-    page_count: Optional[int] = None
-    user_agent: Optional[str] = None
-    referrer: Optional[str] = None
-    ip: Optional[str] = None
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-
-class DownloadEventCreate(BaseModel):
-    format: str
-    page_count: Optional[int] = None
-    referrer: Optional[str] = None
-
-
-class DownloadStats(BaseModel):
-    total_downloads: int
-    pdf_downloads: int
-    word_downloads: int
-    last_download_at: Optional[datetime] = None
-
-
 @api_router.get("/")
 async def root():
     return {"message": "Aman Modern Exchange — Feasibility Study API"}
@@ -78,44 +54,6 @@ async def get_status_checks():
         if isinstance(r['timestamp'], str):
             r['timestamp'] = datetime.fromisoformat(r['timestamp'])
     return rows
-
-
-@api_router.post("/analytics/download", response_model=DownloadEvent)
-async def log_download(payload: DownloadEventCreate, request: Request):
-    fmt = payload.format.lower().strip()
-    if fmt not in ("pdf", "word"):
-        fmt = "pdf"
-    ev = DownloadEvent(
-        format=fmt,
-        page_count=payload.page_count,
-        referrer=payload.referrer,
-        user_agent=request.headers.get("user-agent"),
-        ip=request.client.host if request.client else None,
-    )
-    doc = ev.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    await db.download_events.insert_one(doc)
-    return ev
-
-
-@api_router.get("/analytics/stats", response_model=DownloadStats)
-async def get_stats():
-    total = await db.download_events.count_documents({})
-    pdfs = await db.download_events.count_documents({"format": "pdf"})
-    words = await db.download_events.count_documents({"format": "word"})
-    last_doc = await db.download_events.find_one(
-        {}, {"_id": 0, "timestamp": 1}, sort=[("timestamp", -1)]
-    )
-    last_at = None
-    if last_doc and last_doc.get("timestamp"):
-        ts = last_doc["timestamp"]
-        last_at = datetime.fromisoformat(ts) if isinstance(ts, str) else ts
-    return DownloadStats(
-        total_downloads=total,
-        pdf_downloads=pdfs,
-        word_downloads=words,
-        last_download_at=last_at,
-    )
 
 
 app.include_router(api_router)
