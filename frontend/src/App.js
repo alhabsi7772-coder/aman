@@ -106,11 +106,14 @@ function App() {
         // page. Every other page is packed to exactly 297mm by the paginator, so keep
         // those locked to the exact A4 box for uniform, undistorted output.
         const isCover = el.getAttribute("data-testid") === "page-1";
+        const coverGrid = isCover ? el.querySelector(".cover-grid") : null;
+        const coverGridOriginalOverflow = coverGrid ? coverGrid.style.overflow : null;
         if (isCover) {
           el.style.height = "auto";
           el.style.minHeight = "297mm";
           el.style.maxHeight = "none";
           el.style.overflow = "visible";
+          if (coverGrid) coverGrid.style.overflow = "visible";
         } else {
           el.style.height = "297mm";
           el.style.minHeight = "297mm";
@@ -141,6 +144,7 @@ function App() {
         el.style.maxHeight = original.maxHeight;
         el.style.overflow = original.overflow;
         el.style.boxShadow = original.boxShadow;
+        if (coverGrid) coverGrid.style.overflow = coverGridOriginalOverflow;
 
         const imgData = canvas.toDataURL("image/jpeg", 0.97);
         if (i > 0) pdf.addPage("a4", "portrait");

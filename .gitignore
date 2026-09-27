@@ -91,3 +91,4 @@ credentials.json
 .credentials
 frontend/node_modules/.cache/default-development/0.pack
 .screenshots/output.pdf
+.screenshots/output_v6.pdf

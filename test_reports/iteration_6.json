@@ -1,0 +1,39 @@
+{
+  "summary": "iteration_6: Verified the two-part PDF fix in handleDownloadPDF (App.js) - cover-only fit-scale + all-other-pages locked to 297mm+stretch. Triggered full PDF export via [data-testid=pdf-download-button], waited ~5 min for 149 pages (128 MB), then rendered pages with pdftoppm and visually inspected. Extracted and compared 8 chapter divider pages: ch01(p10), ch02(p17), ch05(p35), ch10(p62), ch17(p100), Annex A(p113), Annex E(p128), Annex H(p145). All dividers are now PERFECTLY CONSISTENT: identical full-bleed navy background edge-to-edge, no white margins, identical big-numeral scale and position, identical rule and title placement across all sampled pages. The prior inconsistency (some dividers slightly scaled/letterboxed) is gone. Content and image pages (p2,p38,p75) unchanged and sharp - no regression. Cover page (p1) contains ALL required text: 'Alamaan Exchange', 'September 2026', 'Confidential' AND the 'SULTANATE OF OMAN · MUSCAT · ENGLISH EDITION' line, all readable and present. Minor cosmetic issue: on the cover, the three metadata values ('Alamaan Exchange / September 2026 / Confidential') have their descenders/bottom edges slightly clipped (~20-30% of letter height on descenders) because the natural cover DOM height slightly exceeds 297mm and inner .cover-grid has overflow:hidden. Text remains fully identifiable. This is the same 'imperceptible fit-scale tightness' flagged as non-blocking in iteration_5 and is a minor design polish item, not a functional regression. No JS/console errors during the 5-minute export.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "PDF cover page (page 1)", "issues": ["The three metadata values row ('Alamaan Exchange / September 2026 / Confidential') has visible clipping of the letters' bottom edges (~20-30% of glyph height on descenders and rounded bottoms). Root cause: inner .cover-grid uses overflow:hidden (index.css L197) while the outer .a4 is captured at height:auto during PDF export; the grid runs out of room and clips its last row before the fit-to-page pass sees it. The 'SULTANATE OF OMAN · MUSCAT · ENGLISH EDITION' line beneath (rendered from .cover-foot which is position:absolute on .a4 - not inside .cover-grid) is fully visible. Suggested fix: reduce .a4.cover padding-bottom from 22mm to ~14mm, OR set .cover-grid overflow:visible during export, OR shrink .cover-image-panel height from 132mm to ~124mm so the grid fits within 297mm at 96dpi. Non-blocking; text is still fully readable."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/.screenshots/output_v6.pdf",
+    "/app/.screenshots/pdf_pages_v6/page-001.jpg",
+    "/app/.screenshots/pdf_pages_v6/cover-bottom.jpg",
+    "/app/.screenshots/pdf_pages_v6/page-010.jpg",
+    "/app/.screenshots/pdf_pages_v6/page-017.jpg",
+    "/app/.screenshots/pdf_pages_v6/page-035.jpg",
+    "/app/.screenshots/pdf_pages_v6/page-062.jpg",
+    "/app/.screenshots/pdf_pages_v6/page-100.jpg",
+    "/app/.screenshots/pdf_pages_v6/page-113.jpg",
+    "/app/.screenshots/pdf_pages_v6/page-128.jpg",
+    "/app/.screenshots/pdf_pages_v6/page-145.jpg"
+  ],
+  "action_items": [
+    "(Optional polish) Address the minor cover-page descender clipping by either (a) removing overflow:hidden on .cover-grid during PDF capture, or (b) shrinking .cover-image-panel height or .a4.cover bottom padding so the intrinsic cover height is <=297mm at 96dpi. Not a blocker - all required text is present and readable, and the user-reported bugs (missing SULTANATE line + inconsistent dividers) are both resolved."
+  ],
+  "critical_code_review_comments": [
+    "handleDownloadPDF (App.js ~L92-159) - branch on data-testid==='page-1' is fragile: if the cover ever moves to a different index or a second full-bleed page needs the same treatment, this hardcode breaks silently. Prefer an explicit data-attribute like data-pdf-fit='cover' on the target section.",
+    "PDF still weighs 128 MB (scale=3, JPEG 0.97, compression 'NONE'). Consider a lighter preset (scale=2 or compression 'FAST') as an optional user toggle - existing suggestion from iteration_4/5.",
+    "Inner .cover-grid overflow:hidden (index.css L197) fights with the cover-only height:auto capture strategy - the .a4 no longer clips but the inner grid still does. Consider clearing overflow on .cover-grid during capture too."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend only)", "frontend": "100% for the two user-reported bugs (divider consistency + cover text presence); minor cosmetic descender-clip on cover values row remains."},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "PDF built successfully in ~5 min via [data-testid=pdf-download-button]. Sample rendered pages in /app/.screenshots/pdf_pages_v6/. Chapter divider consistency across ch01/ch02/ch05/ch10/ch17/Annex A/E/H is now perfect (all full-bleed, identical scale). Cover page has all required text but minor descender clipping on the 3-cell metadata values row - due to .cover-grid overflow:hidden combined with cover natural height slightly >297mm. Not blocking. No regressions on content pages 2, 38, 50, 75. Chapter divider blur fix from iteration_4 still holds.",
+  "rca of the issue": "iteration_5 fix applied height:auto+overflow:visible+fit-scale globally to ALL pages. That inadvertently caused dividers with slightly variable natural heights (due to variable title length) to each fit-scale by different amounts, producing visible size inconsistency between dividers (some full-bleed, some slightly letterboxed). iteration_6 fix scopes that treatment to the cover only (data-testid==='page-1') and restores the original strict 297mm+overflow:hidden+stretch on every other page including all ChapterDivider components. Result: dividers are captured at a uniform 297mm height and stretched identically to A4 → full-bleed and identical across all chapters. Cover keeps its fit-scale behavior so no text disappears. Only remaining artifact is a minor descender clip on the cover's inner .cover-grid row due to overflow:hidden on the grid element."
+}
