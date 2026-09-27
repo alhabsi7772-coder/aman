@@ -101,11 +101,22 @@ function App() {
           boxShadow: el.style.boxShadow,
         };
 
-        // let content render at its full natural height (never clip) while capturing
-        el.style.height = "auto";
-        el.style.minHeight = "297mm";
-        el.style.maxHeight = "none";
-        el.style.overflow = "visible";
+        // the cover page has an absolutely-positioned footer that can sit just below
+        // 297mm during capture; give it room to render fully, then fit-scale into the
+        // page. Every other page is packed to exactly 297mm by the paginator, so keep
+        // those locked to the exact A4 box for uniform, undistorted output.
+        const isCover = el.getAttribute("data-testid") === "page-1";
+        if (isCover) {
+          el.style.height = "auto";
+          el.style.minHeight = "297mm";
+          el.style.maxHeight = "none";
+          el.style.overflow = "visible";
+        } else {
+          el.style.height = "297mm";
+          el.style.minHeight = "297mm";
+          el.style.maxHeight = "297mm";
+          el.style.overflow = "hidden";
+        }
         el.style.boxShadow = "none";
 
         // capture
@@ -133,12 +144,16 @@ function App() {
 
         const imgData = canvas.toDataURL("image/jpeg", 0.97);
         if (i > 0) pdf.addPage("a4", "portrait");
-        // fit the whole captured page inside the A4 bounds without ever cropping content
-        const pageWmm = 210, pageHmm = 297;
-        let drawW = pageWmm, drawH = pageWmm * (canvas.height / canvas.width);
-        if (drawH > pageHmm) { drawW = drawW * (pageHmm / drawH); drawH = pageHmm; }
-        const offsetX = (pageWmm - drawW) / 2;
-        pdf.addImage(imgData, "JPEG", offsetX, 0, drawW, drawH, undefined, "NONE");
+        if (isCover) {
+          // fit the whole captured cover inside the A4 bounds without ever cropping content
+          const pageWmm = 210, pageHmm = 297;
+          let drawW = pageWmm, drawH = pageWmm * (canvas.height / canvas.width);
+          if (drawH > pageHmm) { drawW = drawW * (pageHmm / drawH); drawH = pageHmm; }
+          const offsetX = (pageWmm - drawW) / 2;
+          pdf.addImage(imgData, "JPEG", offsetX, 0, drawW, drawH, undefined, "NONE");
+        } else {
+          pdf.addImage(imgData, "JPEG", 0, 0, 210, 297, undefined, "NONE");
+        }
 
         setPdfCurrent(i + 1);
       }
