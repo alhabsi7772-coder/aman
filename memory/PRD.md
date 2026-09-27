@@ -14,6 +14,7 @@
 - Installed backend (pip) and frontend (yarn) dependencies; restarted supervisor services.
 - Verified via testing agent: backend 6/6 pytest pass; frontend loads cover page, 150 A4 pages render, TOC opens/scrolls correctly, PDF export (149 pages, ~30MB) and Word export (~1.6MB) both complete without JS errors.
 - No functional/design changes made — import preserved original logic and UI exactly.
+- Iteration 2 (bug fixes on user request): renamed company "Al MAAN Exchange" → "Alamaan Exchange"/"ALAMAAN EXCHANGE" across all pages; issue date "June 2026" → "September 2026"; fixed PDF export quality (App.js handleDownloadPDF) — raised html2canvas scale 1.7→3 and JPEG quality 0.84→0.97 (fixes blurry chapter-divider numbers), and fixed a cover-page content-clipping bug by capturing each page at natural height (overflow:visible) then fit-scaling into A4 bounds instead of hard-clipping at 297mm. Verified by testing agent (iteration_4 found the clip, iteration_5 confirmed fix, no regressions). PDF is now ~135MB for 149 pages (quality tradeoff, per user's explicit request for max quality).
 
 ## Backlog (from original repo, deferred per user request — import as-is only)
 - P1: Arabic edition (separate RTL file, same design) — user deferred.

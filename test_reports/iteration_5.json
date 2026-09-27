@@ -1,0 +1,24 @@
+{
+  "summary": "iteration_5: Verified the PDF cover-page clipping fix in handleDownloadPDF (App.js). Triggered full PDF export from the live app via data-testid=pdf-download-button, waited ~6 min for 149 pages (~135 MB), converted the resulting PDF back to images and visually inspected cover, p2, p5, p15, p38 (image page), p50, p75, p100 (chapter divider). Cover page now contains BOTH previously-missing pieces: the 'PREPARED FOR / ISSUE DATE / CLASSIFICATION' row with values 'Alamaan Exchange / September 2026 / Confidential', AND the bottom line 'SULTANATE OF OMAN · MUSCAT · ENGLISH EDITION'. No JS/console errors during export. No regressions detected on sampled pages (chapter divider p100 still clean, image page p38 renders correctly, text pages sharp).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "PDF cover page", "issues": ["Very minor: bottom row values (Alamaan Exchange / September 2026 / Confidential) sit close to the horizontal separator and may look ~1-2px tight because the natural cover height slightly exceeds A4 causing an imperceptible fit-scale; all text remains fully readable and no content is lost. Non-blocking."]}
+    ]
+  },
+  "test_report_links": ["/app/.screenshots/output.pdf", "/app/.screenshots/pdf_pages/cover-001.jpg", "/app/.screenshots/pdf_pages/p2-002.jpg", "/app/.screenshots/pdf_pages/p38-038.jpg", "/app/.screenshots/pdf_pages/p100-100.jpg"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "handleDownloadPDF (App.js ~L92-141) fit logic is correct: capture at natural height + fit-into-A4 with aspect preservation. Sound approach.",
+    "PDF is ~135 MB for 149 pages; scale=3 + JPEG 0.97 + compression NONE is very heavy. Consider scale=2 and pdf compress:true / addImage compression 'FAST' for smaller files with negligible visual loss (optional optimization, not a regression)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "PDF export button data-testid=pdf-download-button. Export takes ~5-6 min; use expect_download with timeout>=420s. Use pdftoppm to render pages of the resulting PDF for visual inspection. Cover page clipping bug from iteration_4 is fixed as of iteration_5.",
+  "rca of the issue": "In iteration_4 each .a4 was locked to height:297mm + overflow:hidden during html2canvas, clipping any content overflowing 297mm on the cover (bottom row + Sultanate line). Fix in iteration_5: during capture, set height:auto/overflow:visible so the entire natural page is rendered, then compute drawW/drawH to fit the whole captured image inside the A4 bounds preserving aspect ratio (offsetX centers horizontally if scaled down). Verified via extracted cover-001.jpg that both previously-missing rows are now present."
+}
