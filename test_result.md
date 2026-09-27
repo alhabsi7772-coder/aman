@@ -190,7 +190,7 @@ backend:
         comment: "CORS middleware configured correctly with allow_origins from environment (set to '*'). All methods and headers allowed."
 
 frontend:
-  - task: "Toolbar - Contents button only (Word/PDF buttons removed)"
+  - task: "Toolbar - Contents button and new export buttons (Download Images, Download ZIP)"
     implemented: true
     working: true
     file: "/app/frontend/src/App.js"
@@ -201,6 +201,45 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ Toolbar verified. Only 'Contents' button present with data-testid='toc-toggle-button'. Word download button (data-testid='word-download-button') and PDF download button (data-testid='pdf-download-button') successfully removed from UI."
+      - working: true
+        agent: "testing"
+        comment: "✅ Toolbar now has 3 buttons: Contents (data-testid='toc-toggle-button'), Download Images (data-testid='download-images-button'), and Download ZIP (data-testid='download-zip-button'). All buttons visible and functional."
+  
+  - task: "Export functionality - Download ZIP"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Download ZIP feature working perfectly. Clicking button triggers backend Playwright-based server-side rendering of 146 pages. Export overlay (data-testid='export-overlay') appears with 'Building your ZIP…' text. Progress counter (data-testid='export-progress-counter') updates correctly (tested at 10s: 10/146, 40s: 53/146, 80s: 112/146). Single ZIP file download triggered with correct filename 'Alamaan-Exchange-Pages-Images.zip'. Total time ~90 seconds. Overlay disappears after completion."
+  
+  - task: "Export functionality - Download Images"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Download Images feature working perfectly. Clicking button triggers backend rendering job. Export overlay appears with 'Preparing images…' text. Progress counter updates correctly (tested at 10s: 11/146, 40s: 61/146). After backend job completes (~90s), frontend fetches ZIP and triggers 146 sequential individual PNG downloads (page-001.png, page-002.png, ..., page-146.png) with 250ms delay between each. All filenames follow correct format. Overlay disappears when backend job completes."
+  
+  - task: "Export backend integration"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py, /app/backend/exporter.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Backend export endpoints working correctly. POST /api/export/start creates export job and returns job_id. GET /api/export/status/{job_id} returns real-time progress (current/total pages, status). GET /api/export/download/{job_id} serves ZIP file. Backend uses Playwright to render 146 A4 pages in headless Chromium at 2x scale, takes screenshots, and bundles into ZIP. Job tracking and cleanup working correctly."
   
   - task: "Table of Contents panel functionality"
     implemented: true
@@ -261,17 +300,21 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ No console errors, warnings, or network errors detected during testing. Application runs cleanly."
+      - working: true
+        agent: "testing"
+        comment: "✅ No console errors or network errors detected during export feature testing. Both Download ZIP and Download Images features run without any console warnings or errors."
 
 metadata:
   created_by: "testing_agent"
-  version: "1.1"
-  test_sequence: 2
+  version: "1.2"
+  test_sequence: 3
   run_ui: true
 
 test_plan:
   current_focus:
-    - "All backend endpoints tested and verified"
-    - "All frontend UI components tested and verified"
+    - "Export feature - Download ZIP tested and verified"
+    - "Export feature - Download Images tested and verified"
+    - "All backend and frontend components tested and verified"
   stuck_tasks: []
   test_all: true
   test_priority: "high_first"
@@ -285,3 +328,5 @@ agent_communication:
     message: "MongoDB integration verified working. All data persistence operations successful. UUID-based IDs working correctly (no ObjectID serialization issues)."
   - agent: "testing"
     message: "Frontend UI testing completed successfully. All requirements verified: (1) Toolbar shows ONLY Contents button - Word/PDF download buttons removed. (2) TOC panel opens/closes correctly with 27 chapters. (3) Chapter navigation scrolls to correct pages. (4) Document renders 150 pages with no errors. (5) No PDF overlay or progress indicators present. (6) Zero console errors or warnings."
+  - agent: "testing"
+    message: "Export feature testing completed successfully. Comprehensive test of new Download ZIP and Download Images features: (1) Toolbar now shows 3 buttons: Contents, Download Images, Download ZIP. (2) Download ZIP: triggers backend Playwright rendering of 146 pages (~90s), shows progress overlay with live counter, downloads single ZIP file 'Alamaan-Exchange-Pages-Images.zip'. (3) Download Images: triggers backend rendering, shows progress overlay, then downloads 146 individual PNG files (page-001.png through page-146.png) sequentially. (4) Progress counters update correctly throughout both processes. (5) Zero console errors or network errors during entire export flow. (6) Backend integration with /api/export/start, /api/export/status/{job_id}, and /api/export/download/{job_id} working perfectly."

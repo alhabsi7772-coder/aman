@@ -693,6 +693,50 @@ ul.check li::before {
 @keyframes spin { to { transform: rotate(360deg); } }
 .spin { animation: spin 1s linear infinite; }
 
+.export-overlay {
+  position: fixed; inset: 0;
+  background: rgba(6, 24, 47, 0.78);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.export-overlay-card {
+  width: min(440px, 92vw);
+  background: #fff; border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.4);
+  text-align: center;
+  font-family: var(--font-sans);
+  border-top: 4px solid var(--highlight);
+}
+.export-overlay-card .ico {
+  width: 56px; height: 56px; border-radius: 999px;
+  background: var(--sky);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--secondary);
+  margin-bottom: 14px;
+}
+.export-overlay-card h3 {
+  margin: 0 0 6px 0;
+  font-family: var(--font-serif); font-size: 22px; color: var(--primary);
+}
+.export-overlay-card .sub { color: var(--ink-3); font-size: 13px; margin-bottom: 18px; }
+.export-progress {
+  height: 8px; background: var(--bg-soft); border-radius: 999px; overflow: hidden;
+  border: 1px solid var(--line-2);
+}
+.export-progress-bar {
+  height: 100%; background: linear-gradient(90deg, var(--secondary), var(--accent));
+  border-radius: 999px; transition: width .25s ease;
+}
+.export-counter {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .18em;
+  color: var(--ink-3);
+}
+
 /* ───────────────────────────────────────────────────────────
    PRINT FALLBACK
    ─────────────────────────────────────────────────────────── */
@@ -701,7 +745,7 @@ ul.check li::before {
   html, body { background: #fff; }
   .doc-shell { padding: 0; gap: 0; background: #fff; }
   .a4 { box-shadow: none; margin: 0; }
-  [data-no-export="true"], .toolbar, .toc-panel { display: none !important; }
+  [data-no-export="true"], .toolbar, .toc-panel, .export-overlay { display: none !important; }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 
