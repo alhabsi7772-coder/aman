@@ -1,0 +1,51 @@
+{
+  "summary": "Full backend + frontend testing of Al MAAN Exchange feasibility study document app. All critical features working: 149 auto-paginated A4 pages with page-1 cover (kiosk image) and back-cover, NO content overflow on any page, NO tables/figures out-of-bounds, TOC panel opens/closes/navigates correctly (ch01..ch18 + axA..axH), ESC closes panel, Word download produces 1.67 MB .docx, PDF download produces valid 30.4 MB A4 PDF with exactly 149 pages verified via pypdf. Backend analytics endpoints work and stats reflect downloads.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/analytics/download", "issue": "Unknown format values (e.g. 'xls') are silently normalized to 'pdf' instead of returning 400. Acceptable but arguably should reject invalid input."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "console_errors": [
+      {"issue": "React warning: 'Encountered two children with the same key axC'. TOC chapters list contains duplicate key 'axC' (likely two entries mapped to 'axC' in buildDocument/META). Non-blocking but React may drop one entry. TOC currently shows 27 items (ch01-18 = 18, plus C + axA..axH = 9 = 27). Still, duplicate keys should be fixed.", "priority": "LOW", "location": "src/doc/content.jsx buildDocument / App.js chapters map"}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix duplicate React key 'axC' in chapters list (buildDocument in content.jsx) - both an item with key 'axC' and another entry using 'axC' key appear to be rendered."
+  ],
+  "critical_code_review_comments": [
+    "server.py silently coerces invalid format to 'pdf' - consider returning HTTP 400 for invalid values so analytics data stays clean.",
+    "App.js handleDownloadPDF locks each .a4 to 297mm height inline; if a page were slightly off it would clip silently. Testing confirmed no clipping (all page-content scrollHeight <= clientHeight + 2px).",
+    "html-docx-js only inlines styles listed in inlineCss; complex layout (grids, flex) will degrade in Word - acceptable for this use case.",
+    "PDF export uses JPEG at 0.84 quality producing 30 MB for 149 pages; may want compress toggle in future.",
+    "React duplicate-key warning at every render (see frontend_issues.console_errors)."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100% (6/6)", "frontend": "100% of tested flows"},
+  "seed_data_creation": "10 analytics download events created in MongoDB (7 pdf, 3 word) via test flows",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "PDF verification: use playwright expect_download + save_as to /tmp, then pypdf.PdfReader for page count/size. Cover page is data-testid='page-1', back-cover is 'back-cover'. window.__docReady=true fires quickly (<1s locally, up to 30s on cold load). All 149 pages had no overflow and no out-of-bounds tables. Backend base URL from REACT_APP_BACKEND_URL. Tests: pytest /app/backend/tests/backend_test.py.",
+  "verification_details": {
+    "pages_count": 149,
+    "page_1_testid": "page-1",
+    "last_page_testid": "back-cover",
+    "chapter_1_page": 10,
+    "overflow_pages": 0,
+    "out_of_bounds_tables_or_figures": 0,
+    "toc_items_present": ["ch01","ch11","ch18","axA","axC"],
+    "toc_click_navigates": true,
+    "toc_esc_closes": true,
+    "pdf_file": {"pages": 149, "size_mb": 30.4, "width_pts": 595.28, "height_pts": 841.89, "a4": true},
+    "word_file": {"size_bytes": 1673901},
+    "backend_stats_after": {"total": 10, "pdf": 7, "word": 3}
+  }
+}

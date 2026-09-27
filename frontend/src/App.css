@@ -1,0 +1,5 @@
+/* App-specific minor overrides. Bulk styling lives in index.css */
+.App {
+  background: var(--bg-page, #e6ebf2);
+  min-height: 100vh;
+}
