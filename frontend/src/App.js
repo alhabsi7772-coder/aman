@@ -101,11 +101,11 @@ function App() {
           boxShadow: el.style.boxShadow,
         };
 
-        // lock to exact A4 dims
-        el.style.height = "297mm";
+        // let content render at its full natural height (never clip) while capturing
+        el.style.height = "auto";
         el.style.minHeight = "297mm";
-        el.style.maxHeight = "297mm";
-        el.style.overflow = "hidden";
+        el.style.maxHeight = "none";
+        el.style.overflow = "visible";
         el.style.boxShadow = "none";
 
         // capture
@@ -116,7 +116,6 @@ function App() {
           backgroundColor: "#ffffff",
           logging: false,
           imageTimeout: 15000,
-          letterRendering: true,
           ignoreElements: (node) => {
             if (!node.getAttribute) return false;
             if (node.getAttribute("data-no-export") === "true") return true;
@@ -134,7 +133,12 @@ function App() {
 
         const imgData = canvas.toDataURL("image/jpeg", 0.97);
         if (i > 0) pdf.addPage("a4", "portrait");
-        pdf.addImage(imgData, "JPEG", 0, 0, 210, 297, undefined, "NONE");
+        // fit the whole captured page inside the A4 bounds without ever cropping content
+        const pageWmm = 210, pageHmm = 297;
+        let drawW = pageWmm, drawH = pageWmm * (canvas.height / canvas.width);
+        if (drawH > pageHmm) { drawW = drawW * (pageHmm / drawH); drawH = pageHmm; }
+        const offsetX = (pageWmm - drawW) / 2;
+        pdf.addImage(imgData, "JPEG", offsetX, 0, drawW, drawH, undefined, "NONE");
 
         setPdfCurrent(i + 1);
       }
