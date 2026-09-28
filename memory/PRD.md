@@ -21,6 +21,9 @@
   - Verified via screenshot (EN + AR toggle): app compiles, Chapter 18 images (ActPro/Hongzhou) render fully uncropped (`object-fit: contain` already correct, letterboxed not cropped).
   - User explicitly deferred (for now): full Arabic translation of Ch.2–18/Annexes, deleting page 104, and Arabic ZIP button validation.
 
+## Implemented (cont.)
+- 2026-08: Deleted the "2.3 · Oman Vision 2040 — The Policy Frame" section/page (heading + 2 paragraphs + Cards) from Chapter 2 in both `part1.jsx` and `part1_ar.jsx`, per user's visual-edit request targeting that exact rendered page. Document re-paginates automatically (was 126 pages, now 125); verified via screenshot before/after.
+
 ## Backlog (deferred by user, awaiting go-ahead)
 - P0: Translate `part2_ar.jsx`…`annexes_ar.jsx` (real Arabic, replacing the temporary English fallback in `content_ar.jsx`).
 - P0: Delete "page 104" — page numbers are computed dynamically by `Paginator.jsx` (not hardcoded); need user to specify which content is on page 104, or agent to screenshot that exact page to identify it before removing.
