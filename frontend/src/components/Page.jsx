@@ -12,6 +12,8 @@ export const Page = ({
   bare = false,
   children,
   testId,
+  brand = "Alaman Exchange",
+  footerText = "CONFIDENTIAL · ALAMAN EXCHANGE · 2026",
 }) => {
   return (
     <section
@@ -21,14 +23,14 @@ export const Page = ({
     >
       {!bare && (
         <header className="page-header">
-          <span className="brand">Alamaan Exchange</span>
+          <span className="brand">{brand}</span>
           <span className="chapter-tag">{chapter}</span>
         </header>
       )}
       <div className="page-content">{children}</div>
       {!bare && (
         <footer className="page-footer">
-          <span>CONFIDENTIAL · ALAMAAN EXCHANGE · 2026</span>
+          <span>{footerText}</span>
           <span className="page-num">{String(n).padStart(3, "0")}</span>
         </footer>
       )}

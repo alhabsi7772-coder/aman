@@ -5,7 +5,7 @@
 /* ───────────────────────────────────────────────────────────
    FONTS — Fraunces (variable serif), Manrope (sans), JetBrains Mono
    ─────────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=El+Messiri:wght@400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap');
 
 /* ───────────────────────────────────────────────────────────
    THEME TOKENS
@@ -35,6 +35,8 @@
   --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-sans:  'Manrope', system-ui, -apple-system, sans-serif;
   --font-mono:  'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --font-serif-ar: 'El Messiri', 'Cairo', sans-serif;
+  --font-sans-ar:  'Cairo', 'El Messiri', sans-serif;
 
   /* shadcn defaults retained for any UI used */
   --background: 0 0% 100%;
@@ -191,8 +193,8 @@
   flex: 1 1 auto;
   display: grid;
   grid-template-columns: 1fr 76mm;
-  gap: 10mm;
-  align-content: space-between;
+  gap: 16mm;
+  align-content: center;
   min-height: 0;
   overflow: hidden;
 }
@@ -805,3 +807,49 @@ ul.bul li::marker { color: var(--highlight); }
 
 .risk-cell .badge { align-self: flex-start; margin-top: 1mm; }
 .mini-card .d.num { font-family: var(--font-mono); color: var(--primary); font-weight: 600; }
+
+/* ───────────────────────────────────────────────────────────
+   RTL / ARABIC EDITION OVERRIDES
+   ─────────────────────────────────────────────────────────── */
+[dir="rtl"] {
+  direction: rtl;
+  --font-serif: var(--font-serif-ar);
+  --font-sans: var(--font-sans-ar);
+}
+[dir="rtl"] .a4 { text-align: right; }
+[dir="rtl"] .tbl-title .tno, [dir="rtl"] .fig .fno, [dir="rtl"] .fullfig .fno, [dir="rtl"] .list-compact .nm {
+  margin-right: 0; margin-left: 2.5mm;
+}
+[dir="rtl"] ul.bul, [dir="rtl"] .swot .q ul, [dir="rtl"] .synthesis ul { padding-left: 0; padding-right: 5mm; }
+[dir="rtl"] ul.check li { padding-left: 0; padding-right: 7mm; }
+[dir="rtl"] ul.check li::before { left: auto; right: 0; }
+[dir="rtl"] ol.steps li { padding: 3mm 14mm 3mm 4mm; }
+[dir="rtl"] ol.steps li::before { left: auto; right: 4mm; }
+[dir="rtl"] .pullquote::before { margin-right: 0; margin-left: 2mm; }
+[dir="rtl"] .cover-foot { right: auto; left: 22mm; }
+[dir="rtl"] .cover-meta .cell { padding-right: 0; padding-left: 6mm; border-right: none; border-left: 1px solid rgba(255,255,255,.10); }
+[dir="rtl"] .cover-meta .cell:last-child { border-left: none; }
+[dir="rtl"] .chapter-divider { padding-left: 0; padding-right: 4mm; align-items: flex-end; text-align: right; }
+[dir="rtl"] .flow .step { margin-right: 0; margin-left: 6mm; padding: 4mm 5mm 4mm 5mm; }
+[dir="rtl"] .flow .step:last-child { margin-left: 0; }
+[dir="rtl"] .flow .step::after { right: auto; left: -6mm; border-left: none; border-right: 4mm solid var(--accent); }
+[dir="rtl"] .tbl caption { text-align: right; }
+[dir="rtl"] .bar-row .val { text-align: right; }
+[dir="rtl"] .toolbar { direction: ltr; }
+[dir="rtl"] .toc-panel { direction: rtl; }
+
+/* language toggle button (fixed, top-left) */
+.lang-toggle {
+  position: fixed;
+  top: 16px; left: 16px;
+  z-index: 60;
+}
+.lang-toggle .tool-btn {
+  border-radius: 999px;
+}
+.tool-btn.zip-ar {
+  background: linear-gradient(135deg, var(--highlight), #8a6710 120%);
+  border: 1px solid rgba(255,255,255,.2);
+  box-shadow: 0 10px 28px rgba(212,160,23,.35);
+}
+.tool-btn.zip-ar:hover { filter: brightness(1.08); }

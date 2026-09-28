@@ -8,19 +8,42 @@ import {
   ImageDown,
   Archive,
   Loader2,
+  Languages,
 } from "lucide-react";
 
 import Paginator from "@/doc/Paginator";
+import PaginatorAr from "@/doc/PaginatorAr";
 import { buildDocument, META } from "@/doc/content";
+import { buildDocumentAr, METAAr } from "@/doc/content_ar";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+const getInitialLang = () => {
+  const q = new URLSearchParams(window.location.search).get("lang");
+  return q === "ar" ? "ar" : "en";
+};
+
+const T = {
+  en: {
+    contents: "Contents", images: "Download Images", zip: "Download ZIP",
+    tocTitle: "Document Contents", zipBuilding: "Building your ZIP…", imgPrep: "Preparing images…",
+    exportSub: "Rendering each A4 page on the server for a pixel-perfect capture. Please keep this tab open.",
+    pages: "PAGES", langBtn: "العربية",
+  },
+  ar: {
+    contents: "المحتويات", images: "تحميل الصور", zip: "تحميل ZIP",
+    tocTitle: "فهرس المحتويات", zipBuilding: "جارٍ إعداد ملف ZIP…", imgPrep: "جارٍ تجهيز الصور…",
+    exportSub: "يتم إعداد كل صفحة على الخادم للحصول على لقطة مطابقة تماماً للتصميم. يرجى إبقاء هذه الصفحة مفتوحة.",
+    pages: "صفحة", langBtn: "English",
+  },
+};
+
 /* ask the backend to render every A4 page with a real browser (Playwright)
    and bundle exact, unaltered screenshots into a ZIP — no client-side
    html2canvas involved, so nothing about the page is ever redrawn/approximated */
-const startExportJob = async () => {
-  const res = await fetch(`${API}/export/start`, { method: "POST" });
+const startExportJob = async (lang) => {
+  const res = await fetch(`${API}/export/start?lang=${lang}`, { method: "POST" });
   if (!res.ok) throw new Error("Could not start export");
   const data = await res.json();
   return data.job_id;
@@ -40,12 +63,26 @@ const pollExportJob = async (jobId, onProgress) => {
 };
 
 function App() {
+  const [lang, setLang] = useState(getInitialLang);
+  const isArabic = lang === "ar";
+  const t = T[lang];
   const [tocOpen, setTocOpen] = useState(false);
   const docRef = useRef(null);
   const [chapters, setChapters] = useState([]);
-  const doc = useMemo(() => buildDocument(), []);
+  const doc = useMemo(() => (isArabic ? buildDocumentAr() : buildDocument()), [isArabic]);
+  const meta = isArabic ? METAAr : META;
   const onLayout = (info) => {
     setChapters(doc.map((c) => ({ num: c.num, title: c.title, page: info.starts[c.key], key: c.key })));
+  };
+
+  const toggleLang = () => {
+    const next = isArabic ? "en" : "ar";
+    setLang(next);
+    setTocOpen(false);
+    const url = new URL(window.location.href);
+    if (next === "ar") url.searchParams.set("lang", "ar");
+    else url.searchParams.delete("lang");
+    window.history.replaceState(null, "", url);
   };
 
   const [imagesBusy, setImagesBusy] = useState(false);
@@ -58,7 +95,7 @@ function App() {
     if (imagesBusy || zipBusy) return;
     setImagesBusy(true);
     try {
-      const jobId = await startExportJob();
+      const jobId = await startExportJob(lang);
       await pollExportJob(jobId, (cur, tot) => { setExportCurrent(cur); setExportTotal(tot); });
 
       const res = await fetch(`${API}/export/download/${jobId}`);
@@ -101,12 +138,12 @@ function App() {
     if (imagesBusy || zipBusy) return;
     setZipBusy(true);
     try {
-      const jobId = await startExportJob();
+      const jobId = await startExportJob(lang);
       await pollExportJob(jobId, (cur, tot) => { setExportCurrent(cur); setExportTotal(tot); });
 
       const a = document.createElement("a");
       a.href = `${API}/export/download/${jobId}`;
-      a.download = "Alamaan-Exchange-Pages-Images.zip";
+      a.download = isArabic ? "الأمان-للصرافة-صور-الصفحات.zip" : "Alaman-Exchange-Pages-Images.zip";
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -139,6 +176,18 @@ function App() {
 
   return (
     <div className="App">
+      {/* LANGUAGE TOGGLE */}
+      <div className="lang-toggle" data-no-export="true">
+        <button
+          className="tool-btn secondary"
+          onClick={toggleLang}
+          data-testid="lang-toggle-button"
+          aria-label="Toggle language"
+        >
+          <Languages size={16} /> {t.langBtn}
+        </button>
+      </div>
+
       {/* TOOLBAR */}
       <div className="toolbar" data-no-export="true">
         <button
@@ -147,7 +196,7 @@ function App() {
           data-testid="toc-toggle-button"
           aria-label="Open Contents"
         >
-          <ListIcon size={16} /> Contents
+          <ListIcon size={16} /> {t.contents}
         </button>
         <button
           className="tool-btn secondary"
@@ -156,16 +205,16 @@ function App() {
           data-testid="download-images-button"
         >
           {imagesBusy ? <Loader2 size={16} className="spin" /> : <ImageDown size={16} />}
-          Download Images
+          {t.images}
         </button>
         <button
-          className="tool-btn"
+          className={`tool-btn ${isArabic ? "zip-ar" : ""}`}
           onClick={handleDownloadZip}
           disabled={imagesBusy || zipBusy}
           data-testid="download-zip-button"
         >
           {zipBusy ? <Loader2 size={16} className="spin" /> : <Archive size={16} />}
-          Download ZIP
+          {t.zip}
         </button>
       </div>
 
@@ -175,9 +224,10 @@ function App() {
         data-no-export="true"
         data-testid="toc-panel"
         aria-hidden={!tocOpen}
+        dir={isArabic ? "rtl" : "ltr"}
       >
         <div className="toc-panel-head">
-          <h3>Document Contents</h3>
+          <h3>{t.tocTitle}</h3>
           <button
             className="tool-btn secondary"
             onClick={() => setTocOpen(false)}
@@ -211,12 +261,10 @@ function App() {
       {/* EXPORT OVERLAY */}
       {(imagesBusy || zipBusy) && (
         <div className="export-overlay" data-no-export="true" data-testid="export-overlay">
-          <div className="export-overlay-card">
+          <div className="export-overlay-card" dir={isArabic ? "rtl" : "ltr"}>
             <div className="ico"><Loader2 className="spin" size={24} /></div>
-            <h3>{zipBusy ? "Building your ZIP…" : "Preparing images…"}</h3>
-            <div className="sub">
-              Rendering each A4 page on the server for a pixel-perfect capture. Please keep this tab open.
-            </div>
+            <h3>{zipBusy ? t.zipBuilding : t.imgPrep}</h3>
+            <div className="sub">{t.exportSub}</div>
             <div className="export-progress">
               <div
                 className="export-progress-bar"
@@ -224,15 +272,17 @@ function App() {
               />
             </div>
             <div className="export-counter" data-testid="export-progress-counter">
-              {exportCurrent} / {exportTotal} PAGES
+              {exportCurrent} / {exportTotal} {t.pages}
             </div>
           </div>
         </div>
       )}
 
       {/* DOCUMENT */}
-      <div className="doc-shell" ref={docRef} data-testid="document-shell">
-        <Paginator chapters={doc} meta={META} onLayout={onLayout} />
+      <div className="doc-shell" ref={docRef} data-testid="document-shell" dir={isArabic ? "rtl" : "ltr"}>
+        {isArabic
+          ? <PaginatorAr chapters={doc} meta={meta} onLayout={onLayout} />
+          : <Paginator chapters={doc} meta={meta} onLayout={onLayout} />}
       </div>
     </div>
   );

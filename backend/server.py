@@ -60,8 +60,8 @@ async def get_status_checks():
 
 
 @api_router.post("/export/start")
-async def export_start():
-    job_id = await start_export_job(scale=2)
+async def export_start(lang: str = "en"):
+    job_id = await start_export_job(scale=2, lang=lang)
     return {"job_id": job_id}
 
 
@@ -84,10 +84,11 @@ async def export_download(job_id: str, background_tasks: BackgroundTasks):
     if not job or job["status"] != "done":
         raise HTTPException(status_code=404, detail="Export not ready")
     background_tasks.add_task(cleanup_job, job_id)
+    filename = "Alaman-Exchange-Arabic-Pages-Images.zip" if job.get("lang") == "ar" else "Alaman-Exchange-Pages-Images.zip"
     return FileResponse(
         job["file_path"],
         media_type="application/zip",
-        filename="Alamaan-Exchange-Pages-Images.zip",
+        filename=filename,
     )
 
 

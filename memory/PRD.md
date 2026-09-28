@@ -1,30 +1,31 @@
 # PRD — Al Amaan Exchange Feasibility Study (Web Document)
 
 ## Original problem statement
-استيراد مشروع "أمان" من GitHub (https://github.com/alhabsi7772-coder/aman.git) وتشغيله على منصة Emergent. الغرض: عرض تقرير دراسة جدوى لشركة Alamaan Exchange، مع إمكانية تحميل صفحات المستند كصور عالية الدقة.
+استيراد مشروع "أمان" من GitHub وتشغيله على منصة Emergent. الغرض: عرض تقرير دراسة جدوى لشركة Alaman Exchange (146 صفحة)، مع تحميل صفحات المستند كصور عالية الدقة (Playwright)، ونسخة عربية (RTL) كاملة من المستند.
 
 ## Architecture
-- Frontend React (CRA/craco/Tailwind). `src/doc/*` builds the paginated A4 document; `App.js` toolbar + TOC panel + export triggers.
-- Backend FastAPI: GET /api/, POST/GET /api/status (MongoDB via motor). Export pipeline in `backend/exporter.py` using Playwright + system Chromium (`/usr/bin/chromium`) to server-side render and screenshot every `.a4` page from the live frontend (http://localhost:3000) — pixel-perfect, no client-side canvas approximation.
+- Frontend React (CRA/craco/Tailwind). `src/doc/*` builds the paginated A4 document; `App.js` toolbar + TOC panel + language toggle + export triggers.
+- Backend FastAPI: export pipeline in `backend/exporter.py` using Playwright + system Chromium to server-side render/screenshot every `.a4` page (supports `?lang=ar`).
 - Images: `/frontend/public/img/*`.
+- English content: `content.jsx` → `part1..5.jsx` + `annexes.jsx`, via `blocks.jsx` (Fig/FullFig default `object-fit: contain`, no cropping).
+- Arabic content: `content_ar.jsx` → `part1_ar.jsx` (fully translated) + `blocks_ar.jsx`, `FrontMatter_ar.jsx`, `PaginatorAr.jsx`.
 
 ## Implemented
-- 2026-07: Re-imported repo as-is, configured env, installed deps, verified.
-- 2026-07: Removed "Download PDF"/"Word" buttons and all related export code (html2canvas/jsPDF/html-docx-js/file-saver) + backend analytics endpoints, per user request.
-- 2026-07: Added "Download Images" and "Download ZIP" buttons. Initial version used client-side html2canvas — user explicitly rejected this ("never use html2canvas, it distorts pages, I want images identical to the HTML").
-- 2026-07 (final): Rebuilt export using **server-side Playwright** (system Chromium, no bundled browser download needed):
-  - `POST /api/export/start` → launches a background job (asyncio task) that navigates Playwright's headless Chromium to the frontend, waits for `window.__docReady`, hides toolbar/TOC via `[data-no-export="true"]`, then screenshots each `.doc-shell > .a4` element (device_scale_factor=2) and zips them into `/tmp/aman_exports/{job_id}.zip`.
-  - `GET /api/export/status/{job_id}` → polled every 700ms by frontend for live progress (current/total).
-  - `GET /api/export/download/{job_id}` → streams the ZIP, deletes temp file after.
-  - "Download ZIP" button: waits for job, then navigates to the download URL directly (native browser download).
-  - "Download Images" button: waits for job, fetches the same ZIP, unzips client-side with JSZip (only used for unzipping, NOT capturing), then triggers ~146 sequential individual PNG downloads (page-001.png … page-146.png) with 250ms delay between each.
-  - Verified end-to-end via curl (job polling, 146-page zip, ~104MB) and frontend testing agent: both buttons work, progress overlay accurate, correct filenames, zero console errors. Full export takes ~90s at scale=2.
-  - Env vars added: `FRONTEND_INTERNAL_URL=http://localhost:3000`, `PLAYWRIGHT_CHROMIUM_PATH=/usr/bin/chromium` in backend/.env.
+- 2026-07: Re-imported repo, Playwright-based ZIP/image export (no html2canvas), verified end-to-end.
+- 2026-08 (session, post filesystem-reset recovery):
+  - Restored global company name "ALAMAN EXCHANGE".
+  - Chapter 18 (part5.jsx, English) rewritten: brand owner ActPro Co., Ltd. (Japan) + contract manufacturer Shenzhen Hongzhou Smart Technology (China), with company-profile tables and 5 uncropped photos (`actpro-tokyo-hq.jpg`, `actpro-smart-exchange-front.png`, `hongzhou-factory-floor.jpg`, `hongzhou-assembly-line.jpg`, `hongzhou-kiosk-oman-omantel.jpg`) extracted from user PDFs into `public/img/`.
+  - Backend `lang` param + frontend language toggle + RTL CSS restored.
+  - Arabic scaffolding recreated: `blocks_ar.jsx`, `FrontMatter_ar.jsx`, `content_ar.jsx`, `PaginatorAr.jsx`, `part1_ar.jsx` (Chapter 1 fully translated, high quality).
+  - **Critical fix**: `content_ar.jsx` was importing `part2_ar.jsx`…`annexes_ar.jsx` which don't exist yet → entire app (both EN and AR) failed to compile (blank/error screen). Fixed by temporarily aliasing English `part2`–`part5`/`annexes` as fallback in `content_ar.jsx` (commented as TODO) so the app runs while translation is pending.
+  - Verified via screenshot (EN + AR toggle): app compiles, Chapter 18 images (ActPro/Hongzhou) render fully uncropped (`object-fit: contain` already correct, letterboxed not cropped).
+  - User explicitly deferred (for now): full Arabic translation of Ch.2–18/Annexes, deleting page 104, and Arabic ZIP button validation.
 
-## Backlog
-- P2: Arabic edition (RTL) — previously deferred by user.
-- P2: Company logo — previously declined by user.
-- P2: Could add cancel-job button if user wants to abort a long-running export mid-way.
+## Backlog (deferred by user, awaiting go-ahead)
+- P0: Translate `part2_ar.jsx`…`annexes_ar.jsx` (real Arabic, replacing the temporary English fallback in `content_ar.jsx`).
+- P0: Delete "page 104" — page numbers are computed dynamically by `Paginator.jsx` (not hardcoded); need user to specify which content is on page 104, or agent to screenshot that exact page to identify it before removing.
+- P1: Validate Arabic "Download ZIP" button end-to-end (backend `?lang=ar` export).
+- P2: Company logo, direct share link, in-document search, export UX polish (cancel button, thumbnails).
 
 ## Next tasks
-- Awaiting further user feedback.
+- Awaiting user go-ahead to resume Arabic translation (part2–annexes) and page-104 deletion.

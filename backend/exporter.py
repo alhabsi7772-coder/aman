@@ -15,7 +15,7 @@ _jobs = {}
 _background_tasks = set()
 
 
-async def _render_pages(job_id: str, scale: int):
+async def _render_pages(job_id: str, scale: int, lang: str):
     job = _jobs[job_id]
     async with async_playwright() as p:
         browser = await p.chromium.launch(
@@ -28,7 +28,8 @@ async def _render_pages(job_id: str, scale: int):
                 device_scale_factor=scale, viewport={"width": 1200, "height": 1000}
             )
             page = await context.new_page()
-            await page.goto(FRONTEND_URL, wait_until="load", timeout=60000)
+            target_url = f"{FRONTEND_URL}/?lang=ar" if lang == "ar" else FRONTEND_URL
+            await page.goto(target_url, wait_until="load", timeout=60000)
             await page.wait_for_function("() => window.__docReady === true", timeout=60000)
             await page.evaluate(
                 "document.querySelectorAll('[data-no-export=\"true\"]').forEach(el => { el.style.display = 'none'; })"
@@ -49,18 +50,18 @@ async def _render_pages(job_id: str, scale: int):
             await browser.close()
 
 
-async def _run_job(job_id: str, scale: int):
+async def _run_job(job_id: str, scale: int, lang: str):
     try:
-        await _render_pages(job_id, scale)
+        await _render_pages(job_id, scale, lang)
     except Exception as e:
         _jobs[job_id]["status"] = "error"
         _jobs[job_id]["error"] = str(e)
 
 
-async def start_export_job(scale: int = 2) -> str:
+async def start_export_job(scale: int = 2, lang: str = "en") -> str:
     job_id = uuid.uuid4().hex
-    _jobs[job_id] = {"status": "running", "current": 0, "total": 0, "error": None, "file_path": None}
-    task = asyncio.create_task(_run_job(job_id, scale))
+    _jobs[job_id] = {"status": "running", "current": 0, "total": 0, "error": None, "file_path": None, "lang": lang}
+    task = asyncio.create_task(_run_job(job_id, scale, lang))
     _background_tasks.add(task)
     task.add_done_callback(_background_tasks.discard)
     return job_id
